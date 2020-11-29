@@ -15,12 +15,15 @@ class PoincarePlot:
 
     def draw(self):
         self.surf.fill((0, 0, 0))
+        self.draw_axes()
+
+    def draw_axes(self):
         pygame.draw.line(self.surf, (255, 255, 255), (int(self.yaxis), 0), (int(self.yaxis), self.surf.get_height()), 2)
         pygame.draw.line(
             self.surf, (255, 255, 255),
             (0, self.surf.get_height()),
             (self.surf.get_width(), self.surf.get_height()),
-            4
+            6
         )
 
     def convert_scale(self, s):

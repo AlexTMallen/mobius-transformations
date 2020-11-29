@@ -21,7 +21,7 @@ class Line:
     # returns 'v' for vertical line, 's' for semicircle, or None if both endpoints are equal
     def type(self):
         if math.isfinite(self.x1) and math.isfinite(self.x2):
-            if self.x1 == self.x2:
+            if abs(self.x1 - self.x2) < 1:
                 return None
             return 's'
         if math.isfinite(self.x1) or math.isfinite(self.x2):
@@ -32,7 +32,7 @@ class Line:
         t = self.type()
         if t == 'v':
             x = self.x1 if math.isfinite(self.x1) else self.x2
-            pygame.draw.line(plot.surf, color, plot.convert_point(x, 0), plot.convert_point(x, plot.surf.get_height()))
+            pygame.draw.line(plot.surf, color, plot.convert_point((x, 0)), plot.convert_point((x, plot.surf.get_height())))
         elif t == 's':
             pygame.draw.circle(
                 plot.surf,
