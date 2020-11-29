@@ -9,8 +9,10 @@ class Line:
     x1 = None
     x2 = None
 
+    # x coordinates of the endpoints of the line
     def __init__(self, x1, x2):
-        self.x1, self.x2 = x1, x2
+        self.x1 = x1 if abs(x1) < 65536 else math.inf  # 2**16 is big enough to be considered infinite
+        self.x2 = x2 if abs(x2) < 65536 else math.inf
 
     def center(self):
         return (self.x1 + self.x2) / 2
