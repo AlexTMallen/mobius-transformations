@@ -34,15 +34,21 @@ def generate_endpoints(endpoints, current, min_size=0.2):
 
 def main():
     # PLAY AROUND WITH THESE
-    w = pygame.display.set_mode((600, 300))
-    plot = PoincarePlot(w, -5, 5)
-    min_size = 1
-    initial_line = Line(-10, 10)
-    endpoints = [[], []]
-    generate_endpoints(endpoints, initial_line, min_size=min_size)
+    w = pygame.display.set_mode((800, 500))
+    back_color = (200, 200, 200)
+    line_color = (200, 50, 50)
+    blue = (100, 100, 200)
+    plot = PoincarePlot(w, -5, 5, -1)
+    # min_size = 1
+    # initial_line = Line(-10, 10)
+    # endpoints = [[], []]
+    # generate_endpoints(endpoints, initial_line, min_size=min_size)
+    lower, upper = -10, 10
+    endpoints = [list(range(lower, upper)), [1] * (upper - lower)]
+    # endpoints = [[-20], [-5]]
     endpoints = np.array(endpoints)
     k = 1
-    step = 0.01
+    step = 0.02
     transition = scipy.linalg.fractional_matrix_power(np.array([[k, -k],
                            [1,  0]], dtype=complex), step)
 
@@ -55,18 +61,28 @@ def main():
                 running = False
 
         # drawing
-        plot.draw()
-        for i in range(0, len(endpoints[0]), 2):
-            line = Line(endpoints[0,i] / endpoints[1,i], endpoints[0,i+1] / endpoints[1,i+1])
-            line.draw((255, 0, 0), plot)
-        plot.draw_axes()
+        plot.draw(back_color)
+        for int_step in [2, 4, 8, 12]:
+            for i in range(0, len(endpoints[0]) - int_step):
+                line = Line(endpoints[0, i] / endpoints[1, i], endpoints[0, i + int_step] / endpoints[1, i + int_step])
+                line.draw(line_color, plot, endpoints=True, lines=True)
+        line = Line(-1, 1)
+        line.draw((100, 100, 100), plot, endpoints=True, lines=True)
+
+        idx = upper
+        # plot.plot_point((endpoints[0, idx] / endpoints[1, idx], 0), color=blue)
+        plot.plot_point((0.5, np.sqrt(3) / 2), color=(0,0,0), size=5)
+        line = Line(endpoints[0, upper - 1] / endpoints[1, upper - 1], endpoints[0, upper + 1] / endpoints[1, upper + 1])
+        line.draw(blue, plot, endpoints=True, lines=True)
+
+        plot.hide_lower_half_plane(back_color)
+        pygame.display.flip()
 
         endpoints = transition @ endpoints
 
-        pygame.display.flip()
         if num_iters * step % 1 == 0:
-            pygame.time.wait(1200)
-        pygame.time.wait(20)
+            pygame.time.wait(0)
+        pygame.time.wait(40)
         num_iters += 1
 
 
